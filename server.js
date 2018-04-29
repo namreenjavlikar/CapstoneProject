@@ -52,8 +52,16 @@ const setAuth = async () => {
     const db = await connection()
     // register = add username and password to db
     app.post('/auth/register', async (req, res) => {
-        const user = await db.collection('users').insertOne(req.body)
-        res.json(user)
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(req.body.password, salt, async (err, hash) => {
+                req.body.password = hash
+                //db.collection('users').createOne({ name: this.state.name, email: this.state.email, role: this.state.role, department: this.state.department, password: hash })
+                const user = await db.collection('users').insertOne(req.body)
+                res.json(user)
+            })
+
+        })
+
     })
 
     // login = check username and password in db and return token containing user data and token string
@@ -61,16 +69,17 @@ const setAuth = async () => {
         let result = null
         const user = await db.collection('users').findOne({ _id: req.body._id })
         if (user) {
-            bcrypt.compare(req.body.password, user.password, (err, res) => {
-                if (res) {
+            bcrypt.compare(req.body.password, user.password, (err, check) => {
+                if (check) {
                     result = { user, token: sign(user, secret) }
+                    res.json(result)
+                    io.emit('token', result)
                     console.log('login result', result)
                 }
             })
         }
 
-        res.json(result)
-        io.emit('token', result)
+
     })
 
     app.get('/auth/logout', async (req, res) => {

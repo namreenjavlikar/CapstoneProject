@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs"
 
 class Register extends Component {
     state = {
+        username: '',
         name: '',
         email: '',
         role: '',
@@ -13,14 +14,8 @@ class Register extends Component {
         password: ''
     }
 
-    async handleCreate() {
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(this.state.password, salt, (err, hash) => {
-                db.collection('users').createOne({ name: this.state.name, email: this.state.email, role: this.state.role, department: this.state.department, password: hash })
-                this.setState({ name: '', email: '', role: '', department: '', password: '' })
-            })
-
-        })
+    async handleRegister() {
+        await db.register(this.state.username, this.state.password, this.state.name, this.state.role, this.state.department, this.state.email )
     }
 
 
@@ -44,6 +39,9 @@ class Register extends Component {
                     <input type="text" placeholder={this.state.name} value={this.state.name} onChange={e => this.setState({ name: e.target.value })} />
                     <br /><label>Recovery Email</label>
                     <input type="text" placeholder={this.state.email} value={this.state.email} onChange={e => this.setState({ email: e.target.value })} />
+                    <label>UserName</label>
+                    <input type="text" placeholder={this.state.username} value={this.state.username} onChange={e => this.setState({ username: e.target.value })} />
+                    <br />
                     <br /><label>Password</label>
                     <input type="text" placeholder={this.state.password} value={this.state.password} onChange={e => this.setState({ password: e.target.value })} />
 
@@ -64,7 +62,7 @@ class Register extends Component {
                     </select> */}
                     <input type="text" placeholder={this.state.department} value={this.state.department} onChange={e => this.setState({ department: e.target.value })} />
                     <br />
-                    <button onClick={() => this.handleCreate()}>Submit</button>
+                    <button onClick={() => this.handleRegister()}>Submit</button>
                 </div>
             </div>
         );

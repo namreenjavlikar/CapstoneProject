@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom"
 import Login from './Login'
-class App extends Component {
+import Register from './Register'
 
+class App extends Component {
   render() {
     return (
-      <Login />
-    );
+      <Router>
+        <div>
+          <Route path="/auth/login" component={Login} />
+          <Route path="/auth/register" component={Register} />
+        </div>
+      </Router>
+    )
   }
 }
 
-export default App;
+export default App

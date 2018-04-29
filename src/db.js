@@ -48,12 +48,19 @@ class DB {
         return this
     }
 
-    async register(_id, password) {
+    async register(_id, password, name, role, department, email) {
         const response = await this.authFetch(
-            'auth/register',
+            '/auth/register',
             {
                 method: 'POST',
-                body: JSON.stringify({ password }),
+                body: JSON.stringify({
+                    _id,
+                    password,
+                    name,
+                    role,
+                    department,
+                    email
+                }),
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -65,7 +72,7 @@ class DB {
 
     async login(_id, password) {
         const response = await this.authFetch(
-            'auth/login',
+            '/auth/login',
             {
                 method: 'POST',
                 body: JSON.stringify({ _id, password }),
