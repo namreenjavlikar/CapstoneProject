@@ -72,10 +72,10 @@ const setAuth = async () => {
             bcrypt.compare(req.body.password, user.password, (err, check) => {
                 if (check) {
                     result = { user, token: sign(user, secret) }
-                    res.json(result)
-                    io.emit('token', result)
                     console.log('login result', result)
                 }
+                res.json(result)
+                io.emit('token', result)
             })
         }
 

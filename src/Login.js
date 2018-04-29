@@ -1,23 +1,22 @@
-<<<<<<< HEAD
-
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import '../node_modules/uikit/dist/css/uikit.css'
+import './App.css'
 import db from './db'
-
 export default class Login extends Component {
 
     state = {
         credentials: '',
-        messageToUser: ''
+        messageToUser: '',
+        showcredentials: false
     }
-
-
-    async handleLogin() {
+    handleLogin = async () => {
+        console.log("THE METHOD IS CCALLLLLEDD ")
 
         //credentials = "username,password"
 
         //split into username and password
         let field = this.state.credentials
-        const specialCharacter = "/"
+        const specialCharacter = "."
         let splitIndex = -1
         for (let i = 0; i < field.length; i++) {
             let c = field.charAt(i)
@@ -28,51 +27,66 @@ export default class Login extends Component {
         }
         let username = field.substring(0, splitIndex).trim()
         let password = field.substring(splitIndex + 1).trim()
-        
+
         const result = await db.login(username, password)
-        console.log("RESULT : " , result)
+        console.log("RESULT : ", result)
 
         if (result) {
             sessionStorage.setItem("token", result.token)
-        }
-    }
+            this.setState({ messageToUser: "" })
 
+        }
+        else {
+            this.setState({ messageToUser: "Invalid Input" })
+        }
+
+
+    }
     render() {
         return (
-            <div style={{ padding: 100 }}>
-                <h1>Login</h1>
-                <hr />
-                <input type="text" placeholder={this.state.credentials} value={this.state.credentials} onChange={e => this.setState({ credentials: e.target.value })} />
-                <p style={{color: 'red'}}>{this.state.messageToUser}</p>
-                <button onClick={() => this.handleLogin()}>Submit</button>
+
+            <div className='login-container' >
+                <center>
+                    <div className="uk-card uk-card-default uk-card-body uk-width-1-4@m  login-card">
+                        <h2 className="login-title">Welcome to DMS-Q</h2>
+                        <hr className="uk-divider-icon" />
+                        <h3 className="login-title">Username.Password</h3>
+                        <br />
+                        <div >
+                            <div className="uk-inline">
+                                <span className="uk-form-icon uk-form-icon-flip" ></span>
+                                <span className="uk-form-icon" uk-icon="icon: lock"></span>
+
+                                <div className="ui icon input">
+                                    <input
+                                        type={this.state.showcredentials ? "text" : "password"}
+                                        placeholder={this.state.credentials}
+                                        value={this.state.credentials}
+                                        onChange={e => this.setState({ credentials: e.target.value , messageToUser: ''})} />
+                                    <i className={this.state.showcredentials ? "hide link icon" : "unhide link icon"} style={{ fontSize: 22 }}
+                                        onClick={() => { this.setState({ showcredentials: !this.state.showcredentials }) }} ></i>
+                                </div>
+                            </div>
+                            <p style={{ color: 'white' }}>{this.state.messageToUser}</p>
+                            <div style={{width: '30%'}}>
+                                <button className="fluid ui button" onClick={() => this.handleLogin()} >LOGIN</button>
+                            </div>
+
+                        </div>
+
+                        <br />
+                        <br />
+
+                        <a href="https://www.w3schools.com" className="login-link">Forgot Your Password?</a>
+
+
+                    </div>
+                </center>
+
             </div>
+
         )
     }
-}
-=======
-import React, { Component } from 'react';
-import db from './db'
 
-class App extends Component {
-  state = {
-    name: '',
-  }
-
-  async handleCreate() {
-    console.log("SDFSDf" + this.state.name)
-    await db.collection('users').createOne({ name: this.state.name })
-    this.setState({ name: '' })
-  }
-
-  render() {
-    return (
-      <div>
-        <input type="text" placeholder={this.state.name} value = {this.state.name}  onChange={e => this.setState({ name: e.target.value })} />
-        <button onClick={() => this.handleCreate()}>Submit</button>
-      </div>
-    );
-  }
 }
 
-export default App;
->>>>>>> 46bf94fb79c0b5e1dc49c0c4580a7896fea74dda
