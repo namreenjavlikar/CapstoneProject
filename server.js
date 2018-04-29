@@ -44,6 +44,8 @@ const emitFindAll = async (collection) => {
 
 import jwt from 'express-jwt'
 import { sign } from 'jsonwebtoken'
+import bcrypt from "bcryptjs"
+
 const secret = 'abc'
 
 const setAuth = async () => {
@@ -57,11 +59,16 @@ const setAuth = async () => {
     // login = check username and password in db and return token containing user data and token string
     app.post('/auth/login', async (req, res) => {
         let result = null
-        const user = await db.collection('users').findOne({ _id: req.body._id, password: req.body.password })
+        const user = await db.collection('users').findOne({ _id: req.body._id })
         if (user) {
-            result = { user, token: sign(user, secret) }
+            bcrypt.compare(req.body.password, user.password, (err, res) => {
+                if (res) {
+                    result = { user, token: sign(user, secret) }
+                    console.log('login result', result)
+                }
+            })
         }
-        console.log('login result', result)
+
         res.json(result)
         io.emit('token', result)
     })
@@ -85,11 +92,14 @@ const setRoutes = async (collection) => {
 
     // custom queries first
     if (collection === 'users') {
+
         // find users by username
         app.get(url + '/username/:_id', async (req, res) => {
-            const results = await db.collection(collection).find({ name: req.params._id }).toArray()
+            const results = await db.collection(collection).find({ username: req.params._id }).toArray()
             res.json(results)
         })
+
+
     }
 
     app.get(url, async (req, res) => {
