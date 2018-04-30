@@ -5,6 +5,7 @@ import Register from './Register'
 import Reset from './Reset'
 import ForgotPassword from './ForgotPassword'
 
+import RegisterN from './RegisterNoColor'
 class App extends Component {
   render() {
     return (
