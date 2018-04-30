@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom"
 import Login from './Login'
 import Register from './Register'
+import Reset from './Reset'
+import ForgotPassword from './ForgotPassword'
 
 class App extends Component {
   render() {
@@ -10,6 +12,8 @@ class App extends Component {
         <div>
           <Route path="/auth/login" component={Login} />
           <Route path="/auth/register" component={Register} />
+          <Route path="/auth/reset/:username/:key" component={Reset} />
+          <Route path="/auth/forgotpassword" component={ForgotPassword} />
         </div>
       </Router>
     )

@@ -63,16 +63,8 @@ const setAuth = async () => {
     const db = await connection()
     // register = add username and password to db
     app.post('/auth/register', async (req, res) => {
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(req.body.password, salt, async (err, hash) => {
-                req.body.password = hash
-                //db.collection('users').createOne({ name: this.state.name, email: this.state.email, role: this.state.role, department: this.state.department, password: hash })
-                const user = await db.collection('users').insertOne(req.body)
-                res.json(user)
-            })
-
-        })
-
+        const user = await db.collection('users').insertOne(req.body)
+        res.json(user)
     })
 
     // login = check username and password in db and return token containing user data and token string
@@ -102,7 +94,7 @@ const setAuth = async () => {
 setAuth()
 
 // check token on all routes except for: auth and GET's
-app.use(jwt({ secret }).unless({ method: ['GET'], path: ['/auth/register', '/auth/login', '/'] }))
+//app.use(jwt({ secret }).unless({ method: ['GET'], path: ['/auth/register', '/auth/login', '/auth/reset/:username/:key',  '/'] }))
 
 // routes
 const setRoutes = async (collection) => {
@@ -115,30 +107,54 @@ const setRoutes = async (collection) => {
 
         // find users by username
         app.get(url + '/username/:_id', async (req, res) => {
-            const results = await db.collection(collection).find({ username: req.params._id }).toArray()
-            res.json(results)
+            const results = await db.collection(collection).find({ _id: req.params._id }).toArray()
+            res.json(results[0])
         })
 
-        app.get(url + '/email', async (req, res) => {
+        app.get(url + '/email/:email', async (req, res) => {
+            const results = await db.collection(collection).find({ email: req.params.email }).toArray()
+            res.json(results[0])
+        })
+        
+
+        app.get(url + '/resetpassword/:email/:key/:username', async (req, res) => {
             let mailOptions = {
                 from: 'dms-q-system@outlook.com',
-                to: '60084226@cna-qatar.edu.qa',
-                subject: 'Activate Account',
-                text: 'Hello world!!',
-                html: '<b>Hello world?</b>'
-            };
+                to: req.params.email,
+                subject: 'Reset Password',
+                html: "<a href='http://localhost:3000/auth/reset/" + req.params.username + "/" + req.params.key + "'>Click here to Reset</a>"
+            }
 
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    return console.log(error);
+                    return console.log(error)
                 }
-                return console.log('Message sent');
-            });
-
+                return console.log('Message sent')
+            })
             res.json({ "success": true })
         })
 
+        app.get(url + '/email/:email/:key/:username', async (req, res) => {
+            let mailOptions = {
+                from: 'dms-q-system@outlook.com',
+                to: req.params.email,
+                subject: 'Activate Account',
+                html: "<a href='http://localhost:3000/auth/reset/" + req.params.username + "/" + req.params.key + "'>Click here to activate</a>"
+            }
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    return console.log(error)
+                }
+                return console.log('Message sent')
+            })
+            res.json({ "success": true })
+        })
+
+        
     }
+
+    const url_id = url + '/:_id'
 
     app.get(url, async (req, res) => {
         const results = await db.collection(collection).find().toArray()
@@ -150,6 +166,15 @@ const setRoutes = async (collection) => {
         emitFindAll(collection)
         res.json(results)
     })
+
+    app.put(url_id, async (req, res) => {
+        req.body._id = collection == 'users' ? req.params._id : new ObjectId(req.params._id)
+        const results = await db.collection(collection).replaceOne({ _id: req.body._id }, req.body)
+        emitFindAll(collection)
+        emitFindAll(collection + '/' + req.params._id)
+        res.json(results)
+    })
+
 
 }
 

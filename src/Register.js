@@ -15,7 +15,9 @@ class Register extends Component {
     }
 
     async handleRegister() {
-        await db.register(this.state.username, this.state.password, this.state.name, this.state.role, this.state.department, this.state.email )
+        let key = Math.random().toString(36).substring(7)
+        await db.register(this.state.username, this.state.password, this.state.name, this.state.role, this.state.department, this.state.email, key)
+        await db.collection('users/email/' + this.state.email + "/" + key + "/" + this.state.username).findAll()
     }
 
 

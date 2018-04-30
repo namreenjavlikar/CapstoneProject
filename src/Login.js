@@ -78,7 +78,7 @@ export default class Login extends Component {
                         <br />
                         <br />
 
-                        <a href="https://www.w3schools.com" className="login-link">Forgot Your Password?</a>
+                        <a onClick={() => this.props.history.push("/auth/forgotpassword")} className="login-link">Forgot Your Password?</a>
 
 
                     </div>

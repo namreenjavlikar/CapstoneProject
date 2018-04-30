@@ -5,7 +5,7 @@ import db from './db'
 class Email extends Component {
 
     sendEmail = async () => {
-        await db.collection('users/email').findAll()
+        await db.collection('users/email/').findAll()
     }
 
     render() {

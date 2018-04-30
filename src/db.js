@@ -48,7 +48,7 @@ class DB {
         return this
     }
 
-    async register(_id, password, name, role, department, email) {
+    async register(_id, password, name, role, department, email, key) {
         const response = await this.authFetch(
             '/auth/register',
             {
@@ -59,7 +59,8 @@ class DB {
                     name,
                     role,
                     department,
-                    email
+                    email,
+                    key
                 }),
                 headers: {
                     'Content-Type': 'application/json'
@@ -94,8 +95,13 @@ class DB {
     async findAll() {
         console.log('url = ', this._collection)
         const response = await this.authFetch('/api/' + this._collection)
-        const json = await response.json()
-        return json
+        try {
+            const json = await response.json()
+            return json
+        } catch (ex) {
+            return null
+        }
+        
     }
 
     async findOne(_id) {
