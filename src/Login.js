@@ -10,8 +10,6 @@ export default class Login extends Component {
         showcredentials: false
     }
     handleLogin = async () => {
-        console.log("THE METHOD IS CCALLLLLEDD ")
-
         //credentials = "username,password"
 
         //split into username and password
@@ -28,19 +26,22 @@ export default class Login extends Component {
         let username = field.substring(0, splitIndex).trim()
         let password = field.substring(splitIndex + 1).trim()
 
-        const result = await db.login(username, password)
-        console.log("RESULT : ", result)
-
-        if (result) {
-            sessionStorage.setItem("token", result.token)
-            this.setState({ messageToUser: "" })
-
-        }
-        else {
+        if (username === "" || password === "" ) {
             this.setState({ messageToUser: "Invalid Input" })
+        } else {
+
+            const result = await db.login(username, password)
+            console.log("RESULT : ", result)
+
+            if (result) {
+                sessionStorage.setItem("token", result.token)
+                this.setState({ messageToUser: "" })
+
+            }
+            else {
+                this.setState({ messageToUser: "Invalid Input" })
+            }
         }
-
-
     }
     render() {
         return (
@@ -62,13 +63,13 @@ export default class Login extends Component {
                                         type={this.state.showcredentials ? "text" : "password"}
                                         placeholder={this.state.credentials}
                                         value={this.state.credentials}
-                                        onChange={e => this.setState({ credentials: e.target.value , messageToUser: ''})} />
+                                        onChange={e => this.setState({ credentials: e.target.value, messageToUser: '' })} />
                                     <i className={this.state.showcredentials ? "hide link icon" : "unhide link icon"} style={{ fontSize: 22 }}
                                         onClick={() => { this.setState({ showcredentials: !this.state.showcredentials }) }} ></i>
                                 </div>
                             </div>
                             <p style={{ color: 'white' }}>{this.state.messageToUser}</p>
-                            <div style={{width: '30%'}}>
+                            <div style={{ width: '30%' }}>
                                 <button className="fluid ui button" onClick={() => this.handleLogin()} >LOGIN</button>
                             </div>
 

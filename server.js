@@ -77,9 +77,9 @@ const setAuth = async () => {
                 res.json(result)
                 io.emit('token', result)
             })
+        }else{
+            res.json(result)
         }
-
-
     })
 
     app.get('/auth/logout', async (req, res) => {
