@@ -11,6 +11,7 @@ const connection = async () => {
 
 import express from 'express'
 import bodyParser from 'body-parser'
+import nodemailer from 'nodemailer'
 
 const app = express()
 
@@ -41,6 +42,16 @@ const emitFindAll = async (collection) => {
     console.log('emitFindAll result:', json)
     io.emit(collection, json)
 }
+
+let transporter = nodemailer.createTransport({
+    host: 'smtp-mail.outlook.com',
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+        user: "dms-q-system@outlook.com",
+        pass: "12class34"
+    }
+});
 
 import jwt from 'express-jwt'
 import { sign } from 'jsonwebtoken'
@@ -77,7 +88,7 @@ const setAuth = async () => {
                 res.json(result)
                 io.emit('token', result)
             })
-        }else{
+        } else {
             res.json(result)
         }
     })
@@ -108,6 +119,24 @@ const setRoutes = async (collection) => {
             res.json(results)
         })
 
+        app.get(url + '/email', async (req, res) => {
+            let mailOptions = {
+                from: 'dms-q-system@outlook.com',
+                to: '60084226@cna-qatar.edu.qa',
+                subject: 'Activate Account',
+                text: 'Hello world!!',
+                html: '<b>Hello world?</b>'
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    return console.log(error);
+                }
+                return console.log('Message sent');
+            });
+
+            res.json({ "success": true })
+        })
 
     }
 

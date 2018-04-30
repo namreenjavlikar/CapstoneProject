@@ -53,10 +53,10 @@ export default class Login extends Component {
                         <hr className="uk-divider-icon" />
                         <h3 className="login-title">Username.Password</h3>
                         <br />
-                        <div >
-                            <div className="uk-inline">
-                                <span className="uk-form-icon uk-form-icon-flip" ></span>
-                                <span className="uk-form-icon" uk-icon="icon: lock"></span>
+                        <div style={{ width: '50%'}} >
+                            <div className="uk-inline" style={{ width: '100%' }}>
+                                {/* <span className="uk-form-icon uk-form-icon-flip" ></span>
+                                <span className="uk-form-icon" uk-icon="icon: lock"></span> */}
 
                                 <div className="ui icon input">
                                     <input
@@ -69,7 +69,7 @@ export default class Login extends Component {
                                 </div>
                             </div>
                             <p style={{ color: 'white' }}>{this.state.messageToUser}</p>
-                            <div style={{ width: '30%' }}>
+                            <div style={{ width: '100%' }}>
                                 <button className="fluid ui button" onClick={() => this.handleLogin()} >LOGIN</button>
                             </div>
 
