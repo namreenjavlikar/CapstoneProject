@@ -26,6 +26,7 @@ class App extends Component {
 
           <Route path="/questions/all" component={Questions.all} />
           <Route path="/questions/create" component={Questions.create} />
+          <Route path="/questions/update/:_id" component={Questions.update} />
 
         </div>
       </Router>
