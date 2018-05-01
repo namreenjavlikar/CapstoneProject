@@ -5,6 +5,8 @@ import Register from './Register'
 import Reset from './Reset'
 import ForgotPassword from './ForgotPassword'
 import Instructor from './Instructor'
+import * as Questions from './Questions'
+
 import RegisterN from './RegisterNoColor'
 import * as Exams from './Exams'
 
@@ -21,6 +23,10 @@ class App extends Component {
 
           <Route path="/Exams/Create/:_id" component={Exams.Create} />
           <Route path="/Exams/Edit/:_id" component={Exams.Edit} />
+
+          <Route path="/questions/all" component={Questions.all} />
+          <Route path="/questions/create" component={Questions.create} />
+
         </div>
       </Router>
     )
