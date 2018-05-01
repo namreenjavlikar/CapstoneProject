@@ -4,7 +4,7 @@ import Login from './Login'
 import Register from './Register'
 import Reset from './Reset'
 import ForgotPassword from './ForgotPassword'
-import Questions from './Questions'
+import * as Questions from './Questions'
 
 import RegisterN from './RegisterNoColor'
 class App extends Component {
@@ -16,7 +16,9 @@ class App extends Component {
           <Route path="/auth/register" component={Register} />
           <Route path="/auth/reset/:username/:key" component={Reset} />
           <Route path="/auth/forgotpassword" component={ForgotPassword} />
-          <Route path="/Questions" component={Questions} />
+
+          <Route path="/questions/all" component={Questions.all} />
+          <Route path="/questions/create" component={Questions.create} />
 
         </div>
       </Router>

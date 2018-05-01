@@ -103,6 +103,8 @@ const setRoutes = async (collection) => {
     const url = '/api/' + collection
 
     // custom queries first
+
+
     if (collection === 'users') {
 
         // find users by username
@@ -154,6 +156,61 @@ const setRoutes = async (collection) => {
         
     }
 
+
+    if (collection === 'questions') {
+
+
+                // LATER ON IF WE NEED A SPECIAL QURRAY for it
+        
+                // // find users by username
+                // app.get(url + '/username/:_id', async (req, res) => {
+                //     const results = await db.collection(collection).find({ _id: req.params._id }).toArray()
+                //     res.json(results[0])
+                // })
+        
+                // app.get(url + '/email/:email', async (req, res) => {
+                //     const results = await db.collection(collection).find({ email: req.params.email }).toArray()
+                //     res.json(results[0])
+                // })
+                
+        
+                // app.get(url + '/resetpassword/:email/:key/:username', async (req, res) => {
+                //     let mailOptions = {
+                //         from: 'dms-q-system@outlook.com',
+                //         to: req.params.email,
+                //         subject: 'Reset Password',
+                //         html: "<a href='http://localhost:3000/auth/reset/" + req.params.username + "/" + req.params.key + "'>Click here to Reset</a>"
+                //     }
+        
+                //     transporter.sendMail(mailOptions, (error, info) => {
+                //         if (error) {
+                //             return console.log(error)
+                //         }
+                //         return console.log('Message sent')
+                //     })
+                //     res.json({ "success": true })
+                // })
+        
+                // app.get(url + '/email/:email/:key/:username', async (req, res) => {
+                //     let mailOptions = {
+                //         from: 'dms-q-system@outlook.com',
+                //         to: req.params.email,
+                //         subject: 'Activate Account',
+                //         html: "<a href='http://localhost:3000/auth/reset/" + req.params.username + "/" + req.params.key + "'>Click here to activate</a>"
+                //     }
+        
+                //     transporter.sendMail(mailOptions, (error, info) => {
+                //         if (error) {
+                //             return console.log(error)
+                //         }
+                //         return console.log('Message sent')
+                //     })
+                //     res.json({ "success": true })
+                // })
+        
+                
+            }
+
     const url_id = url + '/:_id'
 
     app.get(url, async (req, res) => {
@@ -179,3 +236,4 @@ const setRoutes = async (collection) => {
 }
 
 setRoutes('users')
+setRoutes('questions')
