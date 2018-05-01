@@ -15,47 +15,44 @@ export  class all extends Component {
         this.setState({ questions })
     }
 
-    // render() {
-    //     return (
-    //         <div>
-    //             <div>
-    //                 <h3 style={{ paddingLeft: 20 }}>Admin Dashboard</h3>
-    //                 <br />
+    render() {
+        console.log("questions = " + this.state.questions)
+        return (
+            <div>
+                <div>
 
-    //             </div>
-    //             <center><h1>Admin Customers</h1>
-    //                 <BS.Button onClick={this.handleShowAll}>Refresh</BS.Button></center>
-    //             <br />
-    //             <center>
-    //                 <BS.Table striped bordered condensed hover style={{ width: '70%' }} >
-    //                     <thead>
-    //                         <tr><th>Id</th><th>Username</th><th>name</th><th>age</th><th>gender</th><th>Membership</th><th>Actions</th></tr>
-    //                     </thead>
-    //                     <tbody>
-    //                         {this.state.questions.map(
-    //                             (question) =>
-    //                                 <tr key={question.CustomerId}>
-    //                                     <td>{question.CustomerId}</td>
-    //                                     <td>{question.Name}</td>
-    //                                     <td>{question.CustomerName}</td>
-    //                                     <td>{question.Age}</td>
-    //                                     <td>{question.Gender}</td>
-                      
-    //                                     <td>
-    //                                         <center>
-    //                                             {/* <LinkContainer to={'/admincustomers/update/' + question.CustomerId}>
-    //                                                 <BS.Button bsStyle="success">Edit</BS.Button>
-    //                                             </LinkContainer> */}
-    //                                         </center>
-    //                                     </td>
-    //                                 </tr>
-    //                         )}
-    //                     </tbody>
-    //                 </BS.Table>
-    //             </center>
-    //         </div>
-    //     )
-    // }
+                </div>
+                <center><h1>Questions</h1>
+                </center>
+                <br />
+                <center>
+                    <table  striped bordered condensed hover style={{ width: '70%' }} >
+                        <thead>
+                            <tr><th>Id</th><th>Name</th><th>content</th><th>answer</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            {this.state.questions.map(
+                                (question) =>
+                                    <tr key={question._id}>
+                                    <td>{question._id}</td>
+                                        <td>{question.name}</td>
+                                        <td>{question.content}</td>
+                                        <td>{question.answer}</td>
+                                        <td>
+                                            <center>
+                                                {/* <LinkContainer to={'/admincustomers/update/' + question.CustomerId}>
+                                                    <BS.Button bsStyle="success">Edit</BS.Button>
+                                                </LinkContainer> */}
+                                            </center>
+                                        </td>
+                                    </tr>
+                            )}
+                        </tbody>
+                    </table >
+                </center>
+            </div>
+        )
+    }
 
 
     
