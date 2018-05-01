@@ -4,65 +4,65 @@ import './App.css';
 import db from './db'
 
 
-export  class all extends Component {
-    state = {
-        questions: []
-    }
+// export  class all extends Component {
+//     state = {
+//         questions: []
+//     }
 
 
-    async componentDidMount() {
-        let questions = await db.collection('questions').findAll()
-        this.setState({ questions })
-    }
+//     async componentDidMount() {
+//         let questions = await db.collection('questions').findAll()
+//         this.setState({ questions })
+//     }
 
-    render() {
-        return (
-            <div>
-                <div>
-                    <h3 style={{ paddingLeft: 20 }}>Admin Dashboard</h3>
-                    <br />
+//     render() {
+//         return (
+//             <div>
+//                 <div>
+//                     <h3 style={{ paddingLeft: 20 }}>Admin Dashboard</h3>
+//                     <br />
 
-                </div>
-                <center><h1>Admin Customers</h1>
-                    <BS.Button onClick={this.handleShowAll}>Refresh</BS.Button></center>
-                <br />
-                <center>
-                    <BS.Table striped bordered condensed hover style={{ width: '70%' }} >
-                        <thead>
-                            <tr><th>Id</th><th>Username</th><th>name</th><th>age</th><th>gender</th><th>Membership</th><th>Actions</th></tr>
-                        </thead>
-                        <tbody>
-                            {this.state.questions.map(
-                                (question) =>
-                                    <tr key={question.CustomerId}>
-                                        <td>{question.CustomerId}</td>
-                                        <td>{question.Name}</td>
-                                        <td>{question.CustomerName}</td>
-                                        <td>{question.Age}</td>
-                                        <td>{question.Gender}</td>
+//                 </div>
+//                 <center><h1>Admin Customers</h1>
+//                     <BS.Button onClick={this.handleShowAll}>Refresh</BS.Button></center>
+//                 <br />
+//                 <center>
+//                     <BS.Table striped bordered condensed hover style={{ width: '70%' }} >
+//                         <thead>
+//                             <tr><th>Id</th><th>Username</th><th>name</th><th>age</th><th>gender</th><th>Membership</th><th>Actions</th></tr>
+//                         </thead>
+//                         <tbody>
+//                             {this.state.questions.map(
+//                                 (question) =>
+//                                     <tr key={question.CustomerId}>
+//                                         <td>{question.CustomerId}</td>
+//                                         <td>{question.Name}</td>
+//                                         <td>{question.CustomerName}</td>
+//                                         <td>{question.Age}</td>
+//                                         <td>{question.Gender}</td>
                       
-                                        <td>
-                                            <center>
-                                                {/* <LinkContainer to={'/admincustomers/update/' + question.CustomerId}>
-                                                    <BS.Button bsStyle="success">Edit</BS.Button>
-                                                </LinkContainer> */}
-                                            </center>
-                                        </td>
-                                    </tr>
-                            )}
-                        </tbody>
-                    </BS.Table>
-                </center>
-            </div>
-        )
-    }
+//                                         <td>
+//                                             <center>
+//                                                 {/* <LinkContainer to={'/admincustomers/update/' + question.CustomerId}>
+//                                                     <BS.Button bsStyle="success">Edit</BS.Button>
+//                                                 </LinkContainer> */}
+//                                             </center>
+//                                         </td>
+//                                     </tr>
+//                             )}
+//                         </tbody>
+//                     </BS.Table>
+//                 </center>
+//             </div>
+//         )
+//     }
 
 
     
 
 
 
-}
+// }
 
 export  class create extends Component {
     state = {
