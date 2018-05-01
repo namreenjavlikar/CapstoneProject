@@ -22,31 +22,39 @@ class Register extends Component {
         firstNameMessage: '',
         lastNameMessage: '',
         deptMessage: '',
-        flag: false,
+        flag: true,
         users: db.collection('users').findAll()
     }
     async componentDidMount() {
         let users = await db.collection('users').findAll()
         this.setState({ users })
     }
-    //kept it cause I dont know from where it came from
+    
     async handleRegister() {
+        console.log("Registering")
         let key = Math.random().toString(36).substring(7)
-        await db.register(this.state.username, this.state.password, this.state.name, this.state.role, this.state.department, this.state.email, key)
-        await db.collection('users/email/' + this.state.email + "/" + key + "/" + this.state.username).findAll()
+        await db.register(this.state.collegeId, "", (this.state.firstName + " " + this.state.lastName), this.state.role, this.state.dept, this.state.email, key)
+        await db.collection('users/email/' + this.state.email + "/" + key + "/" + this.state.collegeId).findAll()
     }
     async handleCreate() {
-        this.setState({ flag: true })
+        console.log("F", this.state.flag)
         this.handleEmail(this.state.email)
+        console.log("F", this.state.flag)
         this.handleFirstName(this.state.firstName)
+        console.log("F", this.state.flag)
         this.handleLastName(this.state.lastName)
+        console.log("F", this.state.flag)
         this.handleCollegeId(this.state.collegeId)
+        console.log("F", this.state.flag)
         this.handleDepartment(this.state.dept)
+        console.log("F", this.state.flag)
         this.handleRole(this.state.role)
-        this.state.flag ?
-            db.collection('users').createOne({ collegeId: this.state.collegeId, email: this.state.email, role: this.state.role, name: this.state.firstName + ' ' + this.state.lastName, dept: this.state.dept }) &&
-            this.setState({ collegeId: '', email: '', role: '', firstName: '', LastName: '', dept: '' })
-            : null
+        console.log("F", this.state.flag)
+        if(this.state.flag){
+            this.handleRegister()
+        }else{
+            console.log("failed")
+        }
     }
 
     handleEmail(email) {
