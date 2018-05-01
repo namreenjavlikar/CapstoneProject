@@ -23,13 +23,23 @@ class Register extends Component {
         lastNameMessage: '',
         deptMessage: '',
         flag: true,
-        users: db.collection('users').findAll()
+        users: db.collection('users').findAll(),
+
+        courseName: '',
+        courseSemester: '',
+        instructors: [],
+        SelectedInstructor: ""
     }
     async componentDidMount() {
         let users = await db.collection('users').findAll()
-        this.setState({ users })
+
+        //i did a new query because this functionality is for creating a course, 
+        //it should go to some other page, later just cut this part and transfare it to the proper file
+        let instructors = await db.collection('users/instructors').findAll()
+        console.log("IN", instructors)
+        this.setState({ users, instructors })
     }
-    
+
     async handleRegister() {
         console.log("Registering")
         let key = Math.random().toString(36).substring(7)
@@ -37,29 +47,22 @@ class Register extends Component {
         await db.collection('users/email/' + this.state.email + "/" + key + "/" + this.state.collegeId).findAll()
     }
     async handleCreate() {
-        console.log("F", this.state.flag)
         this.handleEmail(this.state.email)
-        console.log("F", this.state.flag)
         this.handleFirstName(this.state.firstName)
-        console.log("F", this.state.flag)
         this.handleLastName(this.state.lastName)
-        console.log("F", this.state.flag)
         this.handleCollegeId(this.state.collegeId)
-        console.log("F", this.state.flag)
         this.handleDepartment(this.state.dept)
-        console.log("F", this.state.flag)
         this.handleRole(this.state.role)
-        console.log("F", this.state.flag)
-        if(this.state.flag){
+        if (this.state.flag) {
             this.handleRegister()
-        }else{
+        } else {
             console.log("failed")
         }
     }
 
     handleEmail(email) {
         let emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/
-        let check = false;
+        let check = false
         let emailMessage = ""
         this.state.users.forEach((element, i) => {
             this.state.users[i].email === email ? check = true : null
@@ -110,6 +113,7 @@ class Register extends Component {
     handleDepartmentSelect(dept) {
         this.setState({ dept })
     }
+
     handleRole(role) {
         let roleMessage = ""
         !role ?
@@ -147,6 +151,24 @@ class Register extends Component {
             :
             collegeIdMessage = "Please enter an College Id"
         collegeIdMessage === '' ? this.setState({ collegeIdMessage, flag: false }) : this.setState({ collegeIdMessage })
+    }
+
+    //for creating a course
+    handleInstructorSelect = async (SelectedInstructor) => {
+        this.setState({ SelectedInstructor })
+    }
+    handleCreateCourse = async () => {
+        let instructor = this.state.instructors.find(inst => inst._id === this.state.SelectedInstructor)
+        await db.collection('courses').createOne({
+            name: this.state.courseName,
+            semester: this.state.courseSemester,
+            instructors: [
+                {
+                    _id: instructor._id,
+                    name: instructor.name
+                }
+            ]
+        })
     }
 
     render() {
@@ -211,11 +233,27 @@ class Register extends Component {
                                     <option value="Business Studies">Business Studies</option>
                                     <option value="Engineering">Engineering</option>
                                     <option value="Health Sciences">Health Sciences</option>
-
                                 </select>
                                 <span>{this.state.deptMessage}</span>
                             </div>
                             <button class="negative ui button" onClick={() => this.handleCreate()}>Register </button>
+                            <br />
+
+                            {/* The Code for creating a course starts here */}
+                            <p style={{ marginTop: 40 }}>Course Name</p>
+                            <input type="text" value={this.state.courseName} onChange={(event) => this.setState({ courseName: event.target.value })} />
+                            <p>Course Semester</p>
+                            <input type="text" value={this.state.courseSemester} onChange={(event) => this.setState({ courseSemester: event.target.value })} />
+                            <p>Instructors</p>
+                            <select class="ui search dropdown" placeholder={"Select Instructor"} onChange={(e) => this.handleInstructorSelect(e.target.value)}>
+                                <option value="">Select Instructor</option>
+                                {
+                                    this.state.instructors.map(instructor =>
+                                        <option value={instructor._id}>{instructor.name}</option>
+                                    )
+                                }
+                            </select>
+                            <button class="negative ui button" onClick={() => this.handleCreateCourse()}>Create Course</button>
                         </div>
                     </div>
                 </div>
