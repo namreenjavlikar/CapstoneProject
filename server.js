@@ -110,6 +110,11 @@ const setRoutes = async (collection) => {
             const results = await db.collection(collection).find({ _id: req.params._id }).toArray()
             res.json(results[0])
         })
+        // find all instructors
+        app.get(url + '/instructors', async (req, res) => {
+            const results = await db.collection(collection).find({ role: "Instructor" }).toArray()
+            res.json(results)
+        })
 
         app.get(url + '/email/:email', async (req, res) => {
             const results = await db.collection(collection).find({ email: req.params.email }).toArray()
@@ -150,8 +155,14 @@ const setRoutes = async (collection) => {
             })
             res.json({ "success": true })
         })
+    }
 
-        
+    if (collection === 'courses') {
+        app.get(url + '/instructor/:_id', async (req, res) => {
+            const allCourses = await db.collection(collection).find().toArray()
+            const results = await Promise.all(allCourses.filter(course => course.instructors.find(inst => inst._id === req.params._id) != undefined))
+            res.json(results)
+        })
     }
 
     const url_id = url + '/:_id'
@@ -179,3 +190,4 @@ const setRoutes = async (collection) => {
 }
 
 setRoutes('users')
+setRoutes('courses')

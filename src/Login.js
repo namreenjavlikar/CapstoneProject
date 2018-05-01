@@ -26,7 +26,7 @@ export default class Login extends Component {
         let username = field.substring(0, splitIndex).trim()
         let password = field.substring(splitIndex + 1).trim()
 
-        if (username === "" || password === "" ) {
+        if (username === "" || password === "") {
             this.setState({ messageToUser: "Invalid Input" })
         } else {
 
@@ -35,8 +35,17 @@ export default class Login extends Component {
 
             if (result) {
                 sessionStorage.setItem("token", result.token)
+                sessionStorage.setItem("user_id", result.user._id)
+                sessionStorage.setItem("role", result.user.role)
+                console.log(sessionStorage.getItem("role"))
                 this.setState({ messageToUser: "" })
 
+                //For now my goal is to be able to create an exam, but this 
+                //should be in a "Home.js" file that checks who is logged in and 
+                //depending on the role it will redirect the user to whatever 
+                //homepage they can are supposed to be in
+                if (result.user.role === "Instructor")
+                    this.props.history.push("/Instructor")
             }
             else {
                 this.setState({ messageToUser: "Invalid Input" })
@@ -53,7 +62,7 @@ export default class Login extends Component {
                         <hr className="uk-divider-icon" />
                         <h3 className="login-title">Username.Password</h3>
                         <br />
-                        <div style={{ width: '50%'}} >
+                        <div style={{ width: '50%' }} >
                             <div className="uk-inline" style={{ width: '100%' }}>
                                 {/* <span className="uk-form-icon uk-form-icon-flip" ></span>
                                 <span className="uk-form-icon" uk-icon="icon: lock"></span> */}
