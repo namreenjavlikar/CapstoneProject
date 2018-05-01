@@ -4,18 +4,18 @@ import './App.css';
 import db from './db'
 import bcrypt from "bcryptjs"
 
-const collegeIdRegex = new RegExp('/^600[0-9]{5}$/');
-const nameRegex = new RegExp('/^[a-zA-Z]*$/');
-const emailRegex = new RegExp('/\S+@\S+\.\S+/');
+const collegeIdRegex = /^600[0-9]{5}$/
+const nameRegex = /^[a-zA-Z]*$/
+const emailRegex = /\S+@\S+\.\S+/
 class Register extends Component {
     state = {
         collegeId: '',
         email: null,
-        role: '',
+        role: null,
         firstName: '',
         lastName: '',
         name: '',
-        dept: '',
+        dept: null,
         collegeIdMessage: '',
         emailMessage: '',
         roleMessage: '',
@@ -29,7 +29,7 @@ class Register extends Component {
         let users = await db.collection('users').findAll()
         this.setState({ users })
     }
-
+    //kept it cause I dont know from where it came from
     async handleRegister() {
         let key = Math.random().toString(36).substring(7)
         await db.register(this.state.username, this.state.password, this.state.name, this.state.role, this.state.department, this.state.email, key)
@@ -41,7 +41,7 @@ class Register extends Component {
         this.handleFirstName(this.state.firstName)
         this.handleLastName(this.state.lastName)
         this.handleCollegeId(this.state.collegeId)
-        this.handleDepartment(this.state.department)
+        this.handleDepartment(this.state.dept)
         this.handleRole(this.state.role)
         this.state.flag ?
             db.collection('users').createOne({ collegeId: this.state.collegeId, email: this.state.email, role: this.state.role, name: this.state.firstName + ' ' + this.state.lastName, dept: this.state.dept }) &&
@@ -50,7 +50,7 @@ class Register extends Component {
     }
 
     handleEmail(email) {
-        let emailRegex = new RegExp('/^600[0-9]{5}$/');///\S+@\S+\.\S+/');
+        let emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/
         let check = false;
         let emailMessage = ""
         this.state.users.forEach((element, i) => {
@@ -64,47 +64,64 @@ class Register extends Component {
                     ?
                     emailMessage = ""
                     :
-                    "Error Invalid Email" && this.setState({ flag: false })
+                    emailMessage = "Error Invalid Email"
             :
             emailMessage = "Please enter an email"
-        this.setState({ emailMessage: emailMessage })
+        emailMessage === '' ? this.setState({ emailMessage, flag: false }) : this.setState({ emailMessage })
     }
     handleFirstName(firstName) {
-        let firstNameMessage = nameRegex.exec(firstName) ? "" : "Error Invalid Name" && this.setState({ flag: false })
-        this.setState({ firstNameMessage, firstName: firstName })
+        let firstNameRegex = /^[a-zA-Z]*$/
+        let firstNameMessage = ""
+        firstName ?
+            firstNameRegex.test(firstName)
+                ?
+                firstNameMessage = ""
+                :
+                firstNameMessage = "Error Invalid First Name"
+            :
+            firstNameMessage = "Please enter an First Name"
+        firstNameMessage === '' ? this.setState({ firstNameMessage, flag: false }) : this.setState({ firstNameMessage })
     }
     handleLastName(lastName) {
-        let lastNameMessage = nameRegex.exec(lastName) ? "" : "Error Invalid Name" && this.setState({ flag: false })
-        this.setState({ lastNameMessage, lastName: lastName })
+        let lastNameRegex = /^[a-zA-Z]*$/
+        let lastNameMessage = ""
+        lastName ?
+            lastNameRegex.test(lastName)
+                ?
+                lastNameMessage = ""
+                :
+                lastNameMessage = "Error Invalid First Name"
+            :
+            lastNameMessage = "Please enter an First Name"
+        lastNameMessage === '' ? this.setState({ lastNameMessage, flag: false }) : this.setState({ lastNameMessage })
     }
 
     handleRoleSelect(role) {
-
-        let roleMessage = !this.role ? "Please select user's Role" && this.setState({ flag: false }) : null
-        this.setState({ roleMessage, role: role })
+        this.setState({ role })
     }
-    handleDepartmentSelect(department) {
-        let departmentMessage = !this.department ? "Please select user's Department" && this.setState({ flag: false }) : null
-        this.setState({ departmentMessage, department: department })
+    handleDepartmentSelect(dept) {
+        this.setState({ dept })
     }
     handleRole(role) {
+        let roleMessage = ""
+        !role ?
+            roleMessage = "Please select user's Role"
+            :
+            roleMessage = ""
 
-        let roleMessage = !this.role ? "Please select user's Role" && this.setState({ flag: false }) : null
-        this.setState({ roleMessage, role: role })
+        this.setState({ flag: !role ? false : null, roleMessage })
     }
-    handleDepartment(department) {
-        let departmentMessage = !this.department ? "Please select user's Department" && this.setState({ flag: false }) : null
-        this.setState({ departmentMessage, department: department })
+    handleDepartment(dept) {
+        let deptMessage = ""
+        !dept ?
+            deptMessage = "Please select user's Department"
+            :
+            deptMessage = ""
+
+        this.setState({ flag: !dept ? false : null, deptMessage })
     }
     handleCollegeId(collegeId) {
-        // let check = false;
-        // this.state.users.forEach((element, i) => {
-        //     this.state.users[i].collegeId == collegeId ? check = true : null
-        // });
-        // let collegeIdMessage = collegeIdRegex.exec(collegeId) ? "" : "Error Invalid College Id" && this.setState({ flag: false })
-        // check ? collegeIdMessage = "Error Duplicate College Id" && this.setState({ flag: false }) : null
-        // this.setState({ collegeIdMessage, collegeId: collegeId })
-
+        let collegeIdRegex = /^600[0-9]{5}$/
         let check = false;
         let collegeIdMessage = ""
         this.state.users.forEach((element, i) => {
@@ -112,64 +129,20 @@ class Register extends Component {
         })
         collegeId ?
             check ?
-                collegeIdMessage = "Error Duplicate Id"
+                collegeIdMessage = "Error Duplicate College Id"
                 :
-                collegeIdRegex.exec(collegeId)
+                collegeIdRegex.test(collegeId)
                     ?
                     collegeIdMessage = ""
                     :
-                    "Error Invalid Id" && this.setState({ flag: false })
+                    collegeIdMessage = "Error Invalid College Id"
             :
-            collegeIdMessage = "Please enter an Id"
-        this.setState({ collegeIdMessage, collegeId: collegeId })
+            collegeIdMessage = "Please enter an College Id"
+        collegeIdMessage === '' ? this.setState({ collegeIdMessage, flag: false }) : this.setState({ collegeIdMessage })
     }
 
     render() {
         return (
-            // <div className="App">
-            //   <header className="App-header">
-            //     <img src={logo} className="App-logo" alt="logo" />
-            //     <h1 className="App-title">Welcome to React</h1>
-            //   </header>
-            //   <p className="App-intro">
-            //     To get started, edit <code>src/App.js</code> and save to reload.
-            //   </p>
-            // </div>
-            // <div>
-            //     <input type="text" placeholder={this.state.name} value={this.state.name} onChange={e => this.setState({ name: e.target.value })} />
-            //     <button onClick={() => this.handleCreate()}>Submit</button>
-            //     <div>
-            //         <p>Register starts here</p>
-            //         <label>Name</label>
-            //         <input type="text" placeholder={this.state.name} value={this.state.name} onChange={e => this.setState({ name: e.target.value })} />
-            //         <br /><label>Recovery Email</label>
-            //         <input type="text" placeholder={this.state.email} value={this.state.email} onChange={e => this.setState({ email: e.target.value })} />
-            //         <label>UserName</label>
-            //         <input type="text" placeholder={this.state.username} value={this.state.username} onChange={e => this.setState({ username: e.target.value })} />
-            //         <br />
-            //         <br /><label>Password</label>
-            //         <input type="text" placeholder={this.state.password} value={this.state.password} onChange={e => this.setState({ password: e.target.value })} />
-
-            //         <br /><label>Role</label>
-            //         {/* <select>
-            //             <option value="Admin">Admin</option>
-            //             <option value="Instructor">Instructor</option>
-            //             <option value="Assistant">Assistant</option>
-            //             <option value="Student">Student</option>
-            //         </select> */}
-            //         <input type="text" placeholder={this.state.role} value={this.state.role} onChange={e => this.setState({ role: e.target.value })} />
-            //         <br /><label>Department</label>
-            //         {/* <select>
-            //             <option value="volvo">IT</option>
-            //             <option value="HS">HS</option>
-            //             <option value="Business">Business</option>
-            //             <option value="Engineering">Engineering</option>
-            //         </select> */}
-            //         <input type="text" placeholder={this.state.department} value={this.state.department} onChange={e => this.setState({ department: e.target.value })} />
-            //         <br />
-            //         <button onClick={() => this.handleRegister()}>Submit</button>
-            //     </div>
-            // </div>
             <div>
                 <div class="ui left fixed vertical menu" style={{ height: '100vh' }}>
                     <div class="item">
@@ -189,31 +162,15 @@ class Register extends Component {
                         <hr class="uk-divider-icon" />
                         <div class="ui form">
 
-                            {/* <label>College Id</label>
-                    <input type="text" placeholder={this.state.collegeId} value={this.state.collegeId} onChange={e =>  this.handleCollegeId(e.target.value) && this.setState({ collegeId: e.target.value })} />
-                    
-                    <br />
-                    <label>First Name</label>
-                    <input type="text" placeholder={this.state.firstName} value={this.state.firstName} onChange={e => this.setState({ firstName: e.target.value })} />
-                    
-                    <label> Last Name</label>
-                    <input type="text" placeholder={this.state.lastName} value={this.state.lastName} onChange={e => this.setState({ lastName: e.target.value })} />
-                    <span>{this.state.firstNameMessage+this.state.lastNameMessage}</span>
-                    <br /><label>Recovery Email</label>
-                    <input type="text" placeholder={this.state.email} value={this.state.email} onChange={e => this.handleEmail(e.target.value) && this.setState({ email: e.target.value })} />
-                    <span>{this.state.emailMessage}</span>*/}
-
                             <div class="four wide field">
                                 <label>College Id</label>
                                 <input type="text" name="college-id" placeholder={this.state.collegeId} value={this.state.collegeId} onChange={e =>
-                                    //this.handleCollegeId(e.target.value) && 
                                     this.setState({ collegeId: e.target.value })} />
                                 <span>{this.state.collegeIdMessage}</span>
                             </div>
                             <div class="four wide field">
                                 <label>Recovery Email</label>
                                 <input type="text" name="email" placeholder={this.state.email} value={this.state.email} onChange={e =>
-                                    //this.handleEmail(e.target.value)&&
                                     this.setState({ email: e.target.value })} />
                                 <span>{this.state.emailMessage}</span>
                             </div>
@@ -229,17 +186,18 @@ class Register extends Component {
                             </div>
                             <div class="four wide field">
                                 <label>Roles</label>
-                                <select class="ui search dropdown" >
+                                <select class="ui search dropdown" onChange={e => this.handleRoleSelect(e.target.value)} >
                                     <option value="">Role</option>
                                     <option value="Student">Student</option>
                                     <option value="Instructor">Instructor</option>
-                                    <option value="Admin assistant">Admin assistant</option>
+                                    <option value="Admin Assistant">Admin Assistant</option>
                                 </select>
+                                <span>{this.state.roleMessage}</span>
                             </div>
 
                             <div class="four wide field">
                                 <label>Departments</label>
-                                <select class="ui search dropdown">
+                                <select class="ui search dropdown" onChange={e => this.handleDepartmentSelect(e.target.value)}>
                                     <option value="">Department</option>
                                     <option value="Information Technology">Information Technology</option>
                                     <option value="Business Studies">Business Studies</option>
@@ -247,6 +205,7 @@ class Register extends Component {
                                     <option value="Health Sciences">Health Sciences</option>
 
                                 </select>
+                                <span>{this.state.deptMessage}</span>
                             </div>
                             <button class="negative ui button" onClick={() => this.handleCreate()}>Register </button>
                         </div>
@@ -258,71 +217,3 @@ class Register extends Component {
 }
 
 export default Register;
-// import React, { Component } from 'react';
-
-// export default class RegisterN extends Component {
-//     render() {
-//         return (
-//             <div>
-//                 <div class="ui left fixed vertical menu">
-//                     <div class="item">
-//                         <img class="ui mini image" src="../images/logo.png" />
-//                     </div>
-//                     <a class="item">Features</a>
-//                     <a class="item">Testimonials</a>
-//                     <a class="item">Sign-in</a>
-//                 </div>
-//                 <div style={{ marginLeft: 121 ,marginRight:50 }}>
-//                     <div class="ui raised very padded text container segment">
-//                         <h1 class="uk-heading-divider">College of the North Atlantic - Qatar</h1>
-//                     </div>
-
-//                     <div class="ui raised very padded text container segment" style={{ height: 550 }}>
-//                         <h4 class="ui dividing header">Create Instructor/Student</h4>
-//                         <form class="ui form">
-
-//                             <div class="eight wide field">
-//                                 <label>College ID</label>
-//                                 <input type="text" name="college-id" placeholder="College ID">
-//                                 </input>
-//                             </div>
-//                             <div class="eight wide field">
-//                                 <label>Name</label>
-//                                 <input type="text" name="name" placeholder="Name">
-//                                 </input>
-//                             </div>
-//                             <div class="eight wide field">
-//                                 <label>Email</label>
-//                                 <input type="text" name="email" placeholder="email">
-//                                 </input>
-//                             </div>
-//                             <div class="eight wide field">
-//                                 <label>Role</label>
-//                                 <div class="field">
-//                                     <div class="ui selection dropdown">
-//                                         <input type="hidden" name="role" />
-//                                         <i class="dropdown icon"></i>
-//                                         <div class="default text">Role</div>
-//                                         <div class="menu">
-//                                             <div class="item" data-value="1">Instructor</div>
-//                                             <div class="item" data-value="2">Student</div>
-//                                             <div class="item" data-value="3">Admin assistant</div>
-
-//                                         </div>
-//                                     </div>
-//                                 </div>
-//                             </div>
-//                             {/*         <div class="item" data-value="2">Instructor</div>
-//                                             <div class="item" data-value="1">Student</div>
-//                                             <div class="item" data-value="0">Admin assistant</div> */}
-
-//                             <button class="ui button" type="submit" style={{ backgroundColor: '#DF4A43' }} onClick={() => this.handle()}>Create</button>
-
-//                         </form>
-//                     </div>
-//                 </div>
-//             </div>
-
-//         );
-//     }
-// }
