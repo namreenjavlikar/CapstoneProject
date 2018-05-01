@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import db from './db'
 
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 export  class all extends Component {
     state = {
@@ -13,6 +14,11 @@ export  class all extends Component {
     async componentDidMount() {
         let questions = await db.collection('questions').findAll()
         this.setState({ questions })
+    }
+     handleCreate() {
+        // let questions = await db.collection('questions').findAll()
+        // this.setState({ questions })
+
     }
 
     render() {
@@ -25,6 +31,7 @@ export  class all extends Component {
                 <center><h1>Questions</h1>
                 </center>
                 <br />
+                <button className="fluid ui button"  onClick={() => this.props.history.push("/questions/create")}>Create Questions</button>
                 <center>
                     <table  striped bordered condensed hover style={{ width: '70%' }} >
                         <thead>
@@ -85,8 +92,8 @@ export  class create extends Component {
         // this.handleDepartment(this.state.dept)
         // this.handleRole(this.state.role)
 
-        db.collection('questions').createOne({ name: this.state.name, answer: this.state.answer })
-
+        db.collection('questions').createOne({ name: this.state.name, content: this.state.content,answer: this.state.answer })
+        this.props.history.push("/questions/all")
         // this.state.flag ?
         //     db.collection('users').createOne({ collegeId: this.state.collegeId, email: this.state.email, role: this.state.role, name: this.state.firstName + ' ' + this.state.lastName, dept: this.state.dept }) &&
         //     this.setState({ collegeId: '', email: '', role: '', firstName: '', LastName: '', dept: '' })
@@ -140,7 +147,7 @@ export  class create extends Component {
                             </div>
 
                             <div class="four wide field">
-                                <label>content</label>
+                                <label>Content</label>
                                 <input type="text" name="answer" placeholder={this.state.content} value={this.state.content} onChange={e =>
                                     this.setState({ content: e.target.value })} />
                             </div>
